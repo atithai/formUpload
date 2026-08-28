@@ -7,13 +7,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div class="form-container">
     <h2>Contact Us</h2>
-    
-    <!-- กล่องแสดงข้อความสถานะ (สำเร็จ/ผิดพลาด) -->
+    <!-- กล่องแสดงข้อความสถานะ -->
     <div id="status-message" class="status-message hidden"></div>
-
+    
     <form id="contact-form">
       <div class="form-group">
         <label for="name">Name</label>
@@ -43,9 +41,9 @@
   </div>
 
   <script>
-    // ⚠️ นำ Web App URL ที่ได้จากการ Deploy Apps Script มาวางตรงนี้
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCgXpyoz2tKEG6G2gMidkeQZAqZ3evgrDzOUj05Bx5NE-7vrbyYQvO9PzBhMVE31Cj/exec';
-
+    // Web App URL จาก Deployment ล่าสุดของคุณ
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzx4x3BicJXeDe7yJ971ZmHNSYafUPFSlWnk1xgrwrTrPgXM9-QZ8pxek4Qf2w0T6Gh/exec';
+    
     const form = document.getElementById('contact-form');
     const submitBtn = document.getElementById('submit-btn');
     const btnText = submitBtn.querySelector('.btn-text');
@@ -55,7 +53,6 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // ล้างสถานะเดิม และเปลี่ยนสถานะปุ่มเป็น Loading
       hideStatus();
       setLoading(true);
 
@@ -76,10 +73,8 @@
           body: JSON.stringify(payload)
         });
 
-        // แสดงข้อความสำเร็จ
-        showStatus('ส่งข้อมูลเรียบร้อยแล้ว! ระบบได้ส่งอีเมลยืนยันไปยังอีเมลของคุณแล้ว', 'success');
+        showStatus('ส่งข้อมูลเรียบร้อยแล้ว!', 'success');
         form.reset();
-
       } catch (error) {
         console.error('Error!', error);
         showStatus('เกิดข้อผิดพลาด ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง', 'error');
@@ -109,6 +104,5 @@
       statusMessage.className = 'status-message hidden';
     }
   </script>
-
 </body>
 </html>
