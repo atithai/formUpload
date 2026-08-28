@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Contact Us</h2>
+    <!-- กล่องแสดงข้อความสถานะ -->
+    <div id="status-message" class="status-message hidden"></div>
+    
+    <form id="contact-form">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="Name" placeholder="กรอกชื่อ-นามสกุล" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="Email" placeholder="example@email.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="Phone" placeholder="08X-XXX-XXXX" required />
+      </div>
+
+      <div class="form-group">
+        <label for="comment">Comment</label>
+        <textarea id="comment" name="Comment" rows="4" placeholder="กรอกข้อความของคุณ..." required></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">
+        <span class="btn-text">Submit</span>
+        <span class="spinner hidden"></span>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Web App URL จาก Deployment ล่าสุดของคุณ
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybrS4XJx0L4dWIva0qTtZKgpfve1Hq5wLKcGVAaD8_gb9PqNB_1H1VMjUJc1dQt9-u/exec';
+    
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const spinner = submitBtn.querySelector('.spinner');
+    const statusMessage = document.getElementById('status-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      hideStatus();
+      setLoading(true);
+
+      const payload = {
+        name: form.Name.value.trim(),
+        email: form.Email.value.trim(),
+        phone: form.Phone.value.trim(),
+        comment: form.Comment.value.trim()
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        showStatus('ส่งข้อมูลเรียบร้อยแล้ว!', 'success');
+        form.reset();
+      } catch (error) {
+        console.error('Error!', error);
+        showStatus('เกิดข้อผิดพลาด ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      if (isLoading) {
+        btnText.textContent = 'กำลังส่งข้อมูล...';
+        spinner.classList.remove('hidden');
+      } else {
+        btnText.textContent = 'Submit';
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function showStatus(text, type) {
+      statusMessage.textContent = text;
+      statusMessage.className = `status-message ${type}`;
+    }
+
+    function hideStatus() {
+      statusMessage.textContent = '';
+      statusMessage.className = 'status-message hidden';
+    }
+  </script>
+</body>
+</html>
